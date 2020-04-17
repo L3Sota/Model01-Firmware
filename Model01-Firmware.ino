@@ -502,7 +502,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
   MouseKeys,
 
-  // The HostPowerManagement plugin allows us to turn LEDs off when then host
+  // The HostPowerManagement plugin allows us to turn LEDs off when the host
   // goes to sleep, and resume them when it wakes up.
   HostPowerManagement,
 
