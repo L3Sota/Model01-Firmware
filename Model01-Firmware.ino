@@ -40,13 +40,13 @@
 #include "Kaleidoscope-LEDEffect-BootGreeting.h"
 
 // Support for LED modes that set all LEDs to a single color
-#include "Kaleidoscope-LEDEffect-SolidColor.h"
+// #include "Kaleidoscope-LEDEffect-SolidColor.h"
 
 // Support for an LED mode that makes all the LEDs 'breathe'
 #include "Kaleidoscope-LEDEffect-Breathe.h"
 
 // Support for an LED mode that makes a red pixel chase a blue pixel across the keyboard
-#include "Kaleidoscope-LEDEffect-Chase.h"
+// #include "Kaleidoscope-LEDEffect-Chase.h"
 
 // Support for LED modes that pulse the keyboard's LED in a rainbow pattern
 #include "Kaleidoscope-LEDEffect-Rainbow.h"
@@ -158,10 +158,10 @@ enum { PRIMARY, NUMPAD, FUNCTION }; // layers
   *
   */
 
-#define PRIMARY_KEYMAP_QWERTY
+// #define PRIMARY_KEYMAP_QWERTY
 // #define PRIMARY_KEYMAP_COLEMAK
 // #define PRIMARY_KEYMAP_DVORAK
-// #define PRIMARY_KEYMAP_CUSTOM
+#define PRIMARY_KEYMAP_CUSTOM
 
 
 
@@ -224,18 +224,19 @@ KEYMAPS(
 
 #elif defined (PRIMARY_KEYMAP_CUSTOM)
   // Edit this keymap to make a custom layout
+  // L3Sota: Mostly Dvorak
   [PRIMARY] = KEYMAP_STACKED
-  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
-   Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
+  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
+   Key_PageUp,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
    ShiftToLayer(FUNCTION),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
-   Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
-                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, LockLayer(NUMPAD),
+   Key_Enter,      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
+   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
@@ -262,6 +263,11 @@ KEYMAPS(
    ___, ___, ___, ___,
    ___),
 
+// #define FUNCTION_KEYMAP_ORIGINAL
+#define FUNCTION_KEYMAP_CUSTOM
+
+#if defined FUNCTION_KEYMAP_ORIGINAL
+
   [FUNCTION] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_CapsLock,
    Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
@@ -277,6 +283,31 @@ KEYMAPS(
    ___, ___, Key_Enter, ___,
    ___)
 ) // KEYMAPS(
+
+#elif defined FUNCTION_KEYMAP_CUSTOM
+
+  [FUNCTION] =  KEYMAP_STACKED
+  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_CapsLock,
+   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
+   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
+   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
+   ___, Key_Delete, ___, ___,
+   ___,
+
+   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,               Key_F8,                Key_F9,          Key_F10,                  Key_F11,
+   Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket, Key_RightCurlyBracket, Key_LeftBracket, Key_RightBracket,         Key_F12,
+                               Key_LeftArrow,          Key_DownArrow,        Key_UpArrow,           Key_RightArrow,  Consumer_VolumeDecrement, Consumer_VolumeIncrement, //
+   Key_PcApplication,          ___,                    Key_F14,              Key_F15,               Consumer_Mute,   Key_Backslash,            Key_Pipe,
+   ___, ___, ___, ___, // <- No Enter                  ^F14: dim display     ^F15: brighten         ^Moved Volume controls to VS- from BMW
+   ___)
+) // KEYMAPS(
+
+#else
+
+#error "No function keymap defined. You should make sure that you have a line like '#define FUNCTION_KEYMAP_ORIGINAL' in your sketch"
+
+#endif
+
 
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
@@ -346,14 +377,13 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 // LED color modes calibrated to draw 500mA or less on the
 // Keyboardio Model 01.
 
-
-static kaleidoscope::plugin::LEDSolidColor solidRed(160, 0, 0);
-static kaleidoscope::plugin::LEDSolidColor solidOrange(140, 70, 0);
-static kaleidoscope::plugin::LEDSolidColor solidYellow(130, 100, 0);
-static kaleidoscope::plugin::LEDSolidColor solidGreen(0, 160, 0);
-static kaleidoscope::plugin::LEDSolidColor solidBlue(0, 70, 130);
-static kaleidoscope::plugin::LEDSolidColor solidIndigo(0, 0, 170);
-static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
+// static kaleidoscope::plugin::LEDSolidColor solidRed(160, 0, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidOrange(140, 70, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidYellow(130, 100, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidGreen(0, 160, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidBlue(0, 70, 130);
+// static kaleidoscope::plugin::LEDSolidColor solidIndigo(0, 0, 170);
+// static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
 
 /** toggleLedsOnSuspendResume toggles the LEDs off when the host goes to sleep,
  * and turns them back on when it wakes up.
@@ -470,10 +500,10 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
   // The chase effect follows the adventure of a blue pixel which chases a red pixel across
   // your keyboard. Spoiler: the blue pixel never catches the red pixel
-  LEDChaseEffect,
+  // LEDChaseEffect,
 
   // These static effects turn your keyboard's LEDs a variety of colors
-  solidRed, solidOrange, solidYellow, solidGreen, solidBlue, solidIndigo, solidViolet,
+  // solidRed, solidOrange, solidYellow, solidGreen, solidBlue, solidIndigo, solidViolet,
 
   // The breathe effect slowly pulses all of the LEDs on your keyboard
   LEDBreatheEffect,
